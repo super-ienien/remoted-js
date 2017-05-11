@@ -4,19 +4,19 @@ const config = require ('./lib/config');
 module.exports = {
     config: function (cfg)
     {
+        config.mongoose = cfg.mongoose || require ('mongoose');
         config.Client = cfg.Client || require ('./lib/models/client');
         config.User = cfg.User || require ('./lib/models/user');
         config.httpServer = cfg.httpServer || createDefaultHttpServer(config.httpPort || 80);
         config.io = cfg.io || require('socket.io')(config.httpServer, cfg.ioOptions);
         config.path = cfg.path || '';
         attachServer(config.path, config.httpServer);
+
+        this.Remoted = require('./lib/remote/remoted')
+        this.cache = require('./lib/remote/cache')
+        this.NotFoundError = require('./lib/errors/not-found-error')
+        this.endpoint = require('./lib/remote/remote-server').createServer
     }
-,   Remoted: require('./lib/remote/remoted')
-,   cache: require('./lib/remote/cache')
-,   errors: {
-        NotFoundError: require('./lib/errors/not-found-error')
-    }
-,   endpoint: require('./lib/remote/remote-room').register
 };
 
 function createDefaultHttpServer()
